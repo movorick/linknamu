@@ -2,9 +2,6 @@ import { LinkList } from "@/components/LinkList";
 import { Profile } from "@/components/Profile";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
-// 클릭 수를 매 요청마다 새로 읽습니다.
-export const dynamic = "force-dynamic";
-
 export default function Home() {
   return (
     <main className="mx-auto w-full max-w-md px-5 pb-16 pt-6">

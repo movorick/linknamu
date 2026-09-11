@@ -1,7 +1,9 @@
 import { MongoClient, type Db } from "mongodb";
 
 const uri = process.env.MONGODB_URI;
-const dbName = process.env.MONGODB_DB ?? "linknamu";
+// ?? 는 빈 문자열을 걸러내지 못해 .env.local 의 `MONGODB_DB=` 가 그대로
+// DB 이름이 되고, 드라이버가 URI 기본 DB(test)로 떨어집니다. || 를 씁니다.
+const dbName = process.env.MONGODB_DB || "linknamu";
 
 /**
  * 개발 모드에서 HMR 로 커넥션이 계속 새로 생기는 것을 막기 위해

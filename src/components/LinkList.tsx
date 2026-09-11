@@ -1,30 +1,45 @@
-import { CLICKS_COLLECTION, getDb } from "@/lib/mongodb";
+"use client";
+
+import { useCallback, useEffect, useState } from "react";
 import { links } from "@/data/profile";
 import { LinkCard } from "./LinkCard";
 
-async function getClickCounts(): Promise<Record<string, number>> {
-  const db = await getDb();
-  if (!db) return {};
+export function LinkList() {
+  /**
+   * 데이터를 받기 전에는 비어 있고, 카드는 0회로 그려집니다.
+   * 응답이 도착하면 실제 집계값으로 한 번에 갈아끼웁니다.
+   */
+  const [counts, setCounts] = useState<Record<string, number>>({});
 
-  try {
-    const docs = await db
-      .collection<{ _id: string; count: number }>(CLICKS_COLLECTION)
-      .find({})
-      .toArray();
-    return Object.fromEntries(docs.map((doc) => [doc._id, doc.count]));
-  } catch {
-    // 집계는 부가 기능이므로 DB 가 죽어도 링크 목록은 그대로 보여줍니다.
-    return {};
-  }
-}
+  useEffect(() => {
+    const controller = new AbortController();
 
-export async function LinkList() {
-  const counts = await getClickCounts();
+    fetch("/api/clicks", { signal: controller.signal, cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data?.counts) setCounts(data.counts);
+      })
+      .catch(() => {
+        // 집계는 부가 기능이므로, 실패하면 0회 표시를 그대로 둡니다.
+      });
+
+    return () => controller.abort();
+  }, []);
+
+  /** 클릭한 카드의 숫자만 즉시 바꿔치기 (낙관적 갱신 → 서버 확정값) */
+  const handleCounted = useCallback((id: string, count: number) => {
+    setCounts((prev) => ({ ...prev, [id]: count }));
+  }, []);
 
   return (
     <nav className="mt-8 flex flex-col gap-3">
       {links.map((link) => (
-        <LinkCard key={link.id} link={link} clickCount={counts[link.id] ?? 0} />
+        <LinkCard
+          key={link.id}
+          link={link}
+          clickCount={counts[link.id] ?? 0}
+          onCounted={handleCounted}
+        />
       ))}
     </nav>
   );
