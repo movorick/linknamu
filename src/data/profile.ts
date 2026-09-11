@@ -3,6 +3,8 @@ export type LinkItem = {
   id: string;
   label: string;
   url: string;
+  /** 라벨 앞에 붙는 이모지. 없으면 라벨만 보여줍니다. */
+  emoji?: string;
 };
 
 /** TODO: 진짜 내용으로 교체 — 지금은 화면 확인용 더미 값입니다. */
@@ -15,9 +17,23 @@ export const profile = {
   avatarUrl: "",
 };
 
-/** TODO: 진짜 URL로 교체 */
 export const links: LinkItem[] = [
-  { id: "github", label: "GitHub", url: "https://github.com/" },
-  { id: "linkedin", label: "LinkedIn", url: "https://www.linkedin.com/" },
-  { id: "blog", label: "Blog", url: "https://example.com/blog" },
+  {
+    id: "github",
+    label: "깃허브",
+    url: "https://github.com/movorick",
+    emoji: "💆‍♀️",
+  },
+  {
+    id: "blog",
+    label: "블로그",
+    url: "https://blog.naver.com/movorick",
+    emoji: "😈",
+  },
+  {
+    id: "email",
+    label: "이메일",
+    url: "mailto:movorick@naver.com",
+    emoji: "👺",
+  },
 ];

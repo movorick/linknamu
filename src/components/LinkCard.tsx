@@ -39,6 +39,11 @@ export function LinkCard({ link, clickCount }: Props) {
       onClick={recordClick}
       className="relative flex h-14 items-center justify-center rounded-2xl border border-slate-300 bg-white px-12 text-center font-semibold text-slate-900 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-50"
     >
+      {link.emoji && (
+        <span aria-hidden className="mr-2 shrink-0">
+          {link.emoji}
+        </span>
+      )}
       <span className="truncate">{link.label}</span>
 
       {clickCount !== undefined && (
